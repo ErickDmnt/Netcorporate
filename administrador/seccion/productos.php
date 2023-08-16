@@ -10,42 +10,31 @@ $txtNombre=(isset($_POST['txtNombre']))?$_POST['txtNombre']:"";
 $txtImagen=(isset($_FILES['txtImagen']['name']))?$_FILES['txtImagen']['name']:"";
 $accion=(isset($_POST['accion']))?$_POST['accion']:"";
 
-echo $txtId."<br/>";
-echo $txtNombre."<br/>";
-echo $txtImagen."<br/>";
-echo $accion."<br/>";
-
-
-$host="localhost";
-$bd="netcorporatetest";
-$usuario="root";
-$contrasenia="";
-
-try{
-    $conexion= new PDO("mysql:host=$host;dbname=$bd",$usuario,$contrasenia);
-    if($conexion ){
-        echo "conectado al sistema";
-    }
-}catch(Exception $ex){
-    echo $ex->getMessage();
-}
+include("../config/bd.php"); 
 
 switch($accion){
 
-    case "Agregar";
+    case "Agregar":
     //INSERT INTO `productos` (`Id`, `Nombre`, `Imagen`) VALUES (NULL, 'laptop', 'imagen.jpg');
+    $sentenciaSQL=$conexion->prepare("INSERT INTO productos (nombre, imagen) VALUES (:nombre, :imagen);");/**Insercion de datos al localhost phpmyadmin */
+    $sentenciaSQL->bindParam(':nombre',$txtNombre);
+    $sentenciaSQL->bindParam(':imagen',$txtImagen);
+    $sentenciaSQL->execute();
     echo"Presionado boton agregar";
+
     break;
 
-    case "Modificar";
+    case "Modificar":
     echo"Presionado boton modificar";
     break;
 
-    case "Cancelar";
+    case "Cancelar":
     echo"Presionado boton cancelar";
     break;
 
 }
+
+
 ?>
 <div class="col-md-5">
 
