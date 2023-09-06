@@ -1,4 +1,4 @@
-<?php include ("../template/cabecera.php"); ?>
+
 <?php
 $host="localhost";/**Datos para la conexion al localhost PHPMyadmin */
 $bd="netcorporatetest";
@@ -12,4 +12,3 @@ try{
     echo $ex->getMessage();
 }
 ?>
-<?php include ("../template/pie.php"); ?>

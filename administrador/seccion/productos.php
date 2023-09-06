@@ -1,3 +1,4 @@
+<?php include("../template/cabecera.php")?>
 <?php
 
 /**print_r($_POST); para recepcion de datos */
@@ -30,12 +31,31 @@ switch ($accion) {
     case "Cancelar":
         echo "Presionado boton cancelar";
         break;
+
+    case "Seleccionar";
+    
+            $sentenciaSQL = $conexion->prepare("SELECT *FROM productos WHERE Id=:Id");
+            $sentenciaSQL->bindParam(':Id',$txtId);
+            $sentenciaSQL->execute();
+            $producto = $sentenciaSQL->fetch(PDO::FETCH_LAZY);
+
+            $txtNombre = $producto['Nombre'];
+            $txtImagen = $producto['Imagen'];
+       // echo "Presionado boton Seleccionar";
+    break;
+
+    case "Borrar";
+        $sentenciaSQL = $conexion->prepare("DELETE FROM productos WHERE Id=:Id");
+        $sentenciaSQL->bindParam(':Id',$txtId);
+        $sentenciaSQL->execute();
+        //echo "Presionado boton Borrar";
+    break;
+
+
 }
 $sentenciaSQL = $conexion->prepare("SELECT *FROM productos");
 $sentenciaSQL->execute();
 $listaproductos = $sentenciaSQL->fetchAll(PDO::FETCH_ASSOC);
-
-
 
 
 ?>
@@ -52,24 +72,28 @@ $listaproductos = $sentenciaSQL->fetchAll(PDO::FETCH_ASSOC);
             <form method="POST" enctype="multipart/form-data"> <!-El enctype Sirve para poder admitir arcchivos en el form->
 
                     <div class="form-group">
-                        <label for="txtId">ID</label>
-                        <input type="text" class="form-control" name="txtId" id="txtId" placeholder="ID">
+                        <label for="txtId">ID:</label>
+                        <input type="text" class="form-control" value ="<?php echo $txtId;?>" name="txtId" id="txtId" placeholder="ID">
+                    </div>
+ 
+                    <div class="form-group">
+                        <label for="txtNombre">Nombre:</label>
+                        <input type="text" class="form-control" value ="<?php echo $txtNombre;?>"  name="txtNombre" id="txtNombre" placeholder="Nombre">
                     </div>
 
-                    <div class="form-group">
-                        <label for="txtNombre">Nombre</label>
-                        <input type="text" class="form-control" name="txtNombre" id="txtNombre" placeholder="Nombre">
-                    </div>
+                    
 
                     <div class="form-group">
-                        <label for="txtImagen">Imagen</label>
+                    
+                        <label for="txtImagen">Imagen:</label>
+                        <?php echo $txtImagen;?>
                         <input type="file" class="form-control" name="txtImagen" id="txtImagen" placeholder="Imagen"><!-type=file....para tipos de archivos en el form ->
                     </div>
 
                     <div class="btn-group" role="group" aria-label="">
                         <button type="submit" name="accion" value="Agregar" class="btn btn-success">Agregar</button><!-accion crea la accion a realizar ->
-                            <button type="submit" name="accion" value="Modificar" class="btn btn-warning">Modificar</button><!-tipo de boton subbmit ->
-                                <button type="submit" name="accion" value="Cancelar" class="btn btn-info">Cancelar</button><!-el value es lo que se hará con la acción ->
+                        <button type="submit" name="accion" value="Modificar" class="btn btn-warning">Modificar</button><!-tipo de boton subbmit ->
+                        <button type="submit" name="accion" value="Cancelar" class="btn btn-info">Cancelar</button><!-el value es lo que se hará con la acción ->
                     </div>
 
             </form>
@@ -77,7 +101,6 @@ $listaproductos = $sentenciaSQL->fetchAll(PDO::FETCH_ASSOC);
 
     </div>
 </div>
-
 <div class="col-md-7">
     <table class="table table-bordered">
         <thead>
@@ -94,10 +117,23 @@ $listaproductos = $sentenciaSQL->fetchAll(PDO::FETCH_ASSOC);
                     <td><?php echo $producto['Id']; ?></td>
                     <td><?php echo $producto['Nombre']; ?></td>
                     <td><?php echo $producto['Imagen']; ?></td>
-                    <td>Seleccionar | Borrar</td>
+
+                    <td>
+                    <form method="post" >
+
+                    <input type="hidden" name="txtId" id="txtId" value="<?php echo $producto['Id'];?>"/>
+
+                    <input type="submit" name="accion" value="Seleccionar" class="btn btn-primary"/>
+                    <input type="submit" name="accion" value="Borrar" class="btn btn-danger"/>
+
+                    </form>
+                    </td>
+
                 </tr>
             <?php } ?>
         </tbody>
     </table>
 
 </div>
+
+<?php include ("../template/pie.php");?>

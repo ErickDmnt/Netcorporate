@@ -16,10 +16,11 @@
     <nav class="navbar navbar-expand navbar-light bg-light">
         <div class="nav navbar-nav">
             <a class="nav-item nav-link active" href="#">Administrador <span class="sr-only">(current)</span></a>
-            <a class="nav-item nav-link" href="#">Inicio</a>
+            <a class="nav-item nav-link" href="<?php echo $url;?>/administrador/inicio.php">Inicio</a>
+            
             <a class="nav-item nav-link" href="<?php echo $url; ?>/administrador/seccion/productos.php">Productos</a>
             <a class="nav-item nav-link" href="<?php echo $url; ?>/administrador/seccion/cerrar.php">Cerrar Sesion</a>
-            <a class="nav-item nav-link" href=""> </a>
+
             <a class="nav-item nav-link" href="<?php echo $url; ?>">Ver sitio</a>
         </div>
     </nav>
@@ -31,6 +32,6 @@
 
 
     <div class="container">
-        <br></br>
+        </br>
 
         <div class="row">
