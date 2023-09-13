@@ -1,4 +1,4 @@
-<?php include("../template/cabecera.php")?>
+<?php include("../template/cabecera.php") ?>
 <?php
 
 /**print_r($_POST); para recepcion de datos */
@@ -19,12 +19,33 @@ switch ($accion) {
         $sentenciaSQL = $conexion->prepare("INSERT INTO productos (nombre, imagen) VALUES (:nombre, :imagen);");
         /**Insercion de datos al localhost phpmyadmin */
         $sentenciaSQL->bindParam(':nombre', $txtNombre);
-        $sentenciaSQL->bindParam(':imagen', $txtImagen);
+
+        $fecha = new DateTime();
+        $nombreArchivo = ($txtImagen != "") ? $fecha->getTimestamp() . "_" . $_FILES["txtImagen"]["name"] : "imagen.jpg";
+
+        $tmpImagen = $_FILES["txtImagen"]["tmp_name"];
+
+        if ($tmpImagen != "") {
+            move_uploaded_file($tmpImagen, "../../img/" . $nombreArchivo);
+        }
+
+        $sentenciaSQL->bindParam(':imagen', $nombreArchivo);
         $sentenciaSQL->execute();
 
         break;
 
     case "Modificar":
+        $sentenciaSQL = $conexion->prepare("UPDATE productos SET Nombre=:nombre WHERE Id=:Id");
+        $sentenciaSQL->bindParam(':nombre', $txtNombre);
+        $sentenciaSQL->bindParam(':Id', $txtId);
+        $sentenciaSQL->execute();
+
+        if ($txtImagen != "") {
+            $sentenciaSQL = $conexion->prepare("UPDATE productos SET Imagen=:imagen WHERE Id=:Id");
+            $sentenciaSQL->bindParam(':imagen', $txtImagen);
+            $sentenciaSQL->bindParam(':Id', $txtId);
+            $sentenciaSQL->execute();
+        }
         echo "Presionado boton modificar";
         break;
 
@@ -33,25 +54,23 @@ switch ($accion) {
         break;
 
     case "Seleccionar";
-    
-            $sentenciaSQL = $conexion->prepare("SELECT *FROM productos WHERE Id=:Id");
-            $sentenciaSQL->bindParam(':Id',$txtId);
-            $sentenciaSQL->execute();
-            $producto = $sentenciaSQL->fetch(PDO::FETCH_LAZY);
 
-            $txtNombre = $producto['Nombre'];
-            $txtImagen = $producto['Imagen'];
-       // echo "Presionado boton Seleccionar";
-    break;
+        $sentenciaSQL = $conexion->prepare("SELECT *FROM productos WHERE Id=:Id");
+        $sentenciaSQL->bindParam(':Id', $txtId);
+        $sentenciaSQL->execute();
+        $producto = $sentenciaSQL->fetch(PDO::FETCH_LAZY);
+
+        $txtNombre = $producto['Nombre'];
+        $txtImagen = $producto['Imagen'];
+        // echo "Presionado boton Seleccionar";
+        break;
 
     case "Borrar";
         $sentenciaSQL = $conexion->prepare("DELETE FROM productos WHERE Id=:Id");
-        $sentenciaSQL->bindParam(':Id',$txtId);
+        $sentenciaSQL->bindParam(':Id', $txtId);
         $sentenciaSQL->execute();
         //echo "Presionado boton Borrar";
-    break;
-
-
+        break;
 }
 $sentenciaSQL = $conexion->prepare("SELECT *FROM productos");
 $sentenciaSQL->execute();
@@ -73,27 +92,29 @@ $listaproductos = $sentenciaSQL->fetchAll(PDO::FETCH_ASSOC);
 
                     <div class="form-group">
                         <label for="txtId">ID:</label>
-                        <input type="text" class="form-control" value ="<?php echo $txtId;?>" name="txtId" id="txtId" placeholder="ID">
+                        <input type="text" class="form-control" value="<?php echo $txtId; ?>" name="txtId" id="txtId" placeholder="ID">
                     </div>
- 
+
                     <div class="form-group">
                         <label for="txtNombre">Nombre:</label>
-                        <input type="text" class="form-control" value ="<?php echo $txtNombre;?>"  name="txtNombre" id="txtNombre" placeholder="Nombre">
+                        <input type="text" class="form-control" value="<?php echo $txtNombre; ?>" name="txtNombre" id="txtNombre" placeholder="Nombre">
                     </div>
 
-                    
+
 
                     <div class="form-group">
-                    
+
                         <label for="txtImagen">Imagen:</label>
-                        <?php echo $txtImagen;?>
+
+                        <?php echo $txtImagen; ?>
+
                         <input type="file" class="form-control" name="txtImagen" id="txtImagen" placeholder="Imagen"><!-type=file....para tipos de archivos en el form ->
                     </div>
 
                     <div class="btn-group" role="group" aria-label="">
                         <button type="submit" name="accion" value="Agregar" class="btn btn-success">Agregar</button><!-accion crea la accion a realizar ->
-                        <button type="submit" name="accion" value="Modificar" class="btn btn-warning">Modificar</button><!-tipo de boton subbmit ->
-                        <button type="submit" name="accion" value="Cancelar" class="btn btn-info">Cancelar</button><!-el value es lo que se hará con la acción ->
+                            <button type="submit" name="accion" value="Modificar" class="btn btn-warning">Modificar</button><!-tipo de boton subbmit ->
+                                <button type="submit" name="accion" value="Cancelar" class="btn btn-info">Cancelar</button><!-el value es lo que se hará con la acción ->
                     </div>
 
             </form>
@@ -119,14 +140,14 @@ $listaproductos = $sentenciaSQL->fetchAll(PDO::FETCH_ASSOC);
                     <td><?php echo $producto['Imagen']; ?></td>
 
                     <td>
-                    <form method="post" >
+                        <form method="post">
 
-                    <input type="hidden" name="txtId" id="txtId" value="<?php echo $producto['Id'];?>"/>
+                            <input type="hidden" name="txtId" id="txtId" value="<?php echo $producto['Id']; ?>" />
 
-                    <input type="submit" name="accion" value="Seleccionar" class="btn btn-primary"/>
-                    <input type="submit" name="accion" value="Borrar" class="btn btn-danger"/>
+                            <input type="submit" name="accion" value="Seleccionar" class="btn btn-primary" />
+                            <input type="submit" name="accion" value="Borrar" class="btn btn-danger" />
 
-                    </form>
+                        </form>
                     </td>
 
                 </tr>
@@ -136,4 +157,4 @@ $listaproductos = $sentenciaSQL->fetchAll(PDO::FETCH_ASSOC);
 
 </div>
 
-<?php include ("../template/pie.php");?>
+<?php include("../template/pie.php"); ?>
