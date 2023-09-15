@@ -46,7 +46,6 @@ switch ($accion) {
             $sentenciaSQL->bindParam(':Id', $txtId);
             $sentenciaSQL->execute();
         }
-        echo "Presionado boton modificar";
         break;
 
     case "Cancelar":
