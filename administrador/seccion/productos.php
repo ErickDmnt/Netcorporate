@@ -17,14 +17,15 @@ switch ($accion) {
     case "Agregar":
         //INSERT INTO `productos` (`Id`, `Nombre`, `Imagen`) VALUES (NULL, 'laptop', 'imagen.jpg');
         $sentenciaSQL = $conexion->prepare("INSERT INTO productos (nombre, imagen) VALUES (:nombre, :imagen);");
-        /**Insercion de datos al localhost phpmyadmin */
+        /*Insercion de datos al localhost phpmyadmin*/
         $sentenciaSQL->bindParam(':nombre', $txtNombre);
-
+        //crea el nombre para temporal de acuerdo a la fecha 
         $fecha = new DateTime();
+        //crea el archivo en temporal con el nombre fecha o si esta vacio lo deja en imagen.jpg por defecto
         $nombreArchivo = ($txtImagen != "") ? $fecha->getTimestamp() . "_" . $_FILES["txtImagen"]["name"] : "imagen.jpg";
 
         $tmpImagen = $_FILES["txtImagen"]["tmp_name"];
-
+        //mueve el archivo si existe en temporalImagen
         if ($tmpImagen != "") {
             move_uploaded_file($tmpImagen, "../../img/" . $nombreArchivo);
         }
@@ -35,14 +36,37 @@ switch ($accion) {
         break;
 
     case "Modificar":
+
+        //actualizamos el nombre
         $sentenciaSQL = $conexion->prepare("UPDATE productos SET Nombre=:nombre WHERE Id=:Id");
         $sentenciaSQL->bindParam(':nombre', $txtNombre);
         $sentenciaSQL->bindParam(':Id', $txtId);
         $sentenciaSQL->execute();
-
+        //verificamos que no este vacio
         if ($txtImagen != "") {
+
+            //cambiamos el nombre del archivo
+            $fecha = new DateTime();
+            $nombreArchivo = ($txtImagen != "") ? $fecha->getTimestamp() . "_" . $_FILES["txtImagen"]["name"] : "imagen.jpg";
+            $tmpImagen = $_FILES["txtImagen"]["tmp_name"];
+
+            //movemos el archivo a la ubicacion indicada (recordar dar privilegios [esritura lectura] a la carpeta de destino en mac)
+            move_uploaded_file($tmpImagen, "../../img/" . $nombreArchivo);
+
+            //selecciona y borra el archivo antiguo -- hastaterminar el if
+            $sentenciaSQL = $conexion->prepare("SELECT imagen FROM productos WHERE Id=:Id");
+            $sentenciaSQL->bindParam(':Id', $txtId);
+            $sentenciaSQL->execute();
+            $producto = $sentenciaSQL->fetch(PDO::FETCH_LAZY);
+            
+            if (isset($producto["imagen"]) && ($producto["imagen"] != "imagen.jpg")) {
+                if (file_exists("../../img/" . $producto["imagen"]))
+                unlink("../../img/" . $producto["imagen"]);
+            }
+
+            //despues de los pasos anteriores actualizamos el arhivo nuevo
             $sentenciaSQL = $conexion->prepare("UPDATE productos SET Imagen=:imagen WHERE Id=:Id");
-            $sentenciaSQL->bindParam(':imagen', $txtImagen);
+            $sentenciaSQL->bindParam(':imagen', $nombreArchivo);
             $sentenciaSQL->bindParam(':Id', $txtId);
             $sentenciaSQL->execute();
         }
@@ -65,10 +89,24 @@ switch ($accion) {
         break;
 
     case "Borrar";
+        //primero selecciona el archivo dependiendo si se selecciona correctamente el id
+
+    $sentenciaSQL = $conexion->prepare("SELECT imagen FROM productos WHERE Id=:Id");
+    $sentenciaSQL->bindParam(':Id', $txtId);
+    $sentenciaSQL->execute();
+    $producto = $sentenciaSQL->fetch(PDO::FETCH_LAZY);
+
+        //si el archivo  es diferente a imagen.jpg lo borra
+        if(isset ($producto["imagen"])&&($producto["imagen"]!="imagen.jpg")){
+            if(file_exists("../../img/".$producto["imagen"]))
+            unlink("../../img/".$producto["imagen"]);
+
+        }
+            //borrado de archivo
         $sentenciaSQL = $conexion->prepare("DELETE FROM productos WHERE Id=:Id");
         $sentenciaSQL->bindParam(':Id', $txtId);
         $sentenciaSQL->execute();
-        //echo "Presionado boton Borrar";
+        
         break;
 }
 $sentenciaSQL = $conexion->prepare("SELECT *FROM productos");
