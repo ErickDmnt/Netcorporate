@@ -32,7 +32,7 @@ switch ($accion) {
 
         $sentenciaSQL->bindParam(':imagen', $nombreArchivo);
         $sentenciaSQL->execute();
-
+        header("Location: productos.php");
         break;
 
     case "Modificar":
@@ -58,10 +58,10 @@ switch ($accion) {
             $sentenciaSQL->bindParam(':Id', $txtId);
             $sentenciaSQL->execute();
             $producto = $sentenciaSQL->fetch(PDO::FETCH_LAZY);
-            
+
             if (isset($producto["imagen"]) && ($producto["imagen"] != "imagen.jpg")) {
                 if (file_exists("../../img/" . $producto["imagen"]))
-                unlink("../../img/" . $producto["imagen"]);
+                    unlink("../../img/" . $producto["imagen"]);
             }
 
             //despues de los pasos anteriores actualizamos el arhivo nuevo
@@ -70,10 +70,13 @@ switch ($accion) {
             $sentenciaSQL->bindParam(':Id', $txtId);
             $sentenciaSQL->execute();
         }
+        header("Location: productos.php");
         break;
 
     case "Cancelar":
-        echo "Presionado boton cancelar";
+
+        header("Location: productos.php");
+
         break;
 
     case "Seleccionar";
@@ -91,22 +94,21 @@ switch ($accion) {
     case "Borrar";
         //primero selecciona el archivo dependiendo si se selecciona correctamente el id
 
-    $sentenciaSQL = $conexion->prepare("SELECT imagen FROM productos WHERE Id=:Id");
-    $sentenciaSQL->bindParam(':Id', $txtId);
-    $sentenciaSQL->execute();
-    $producto = $sentenciaSQL->fetch(PDO::FETCH_LAZY);
+        $sentenciaSQL = $conexion->prepare("SELECT imagen FROM productos WHERE Id=:Id");
+        $sentenciaSQL->bindParam(':Id', $txtId);
+        $sentenciaSQL->execute();
+        $producto = $sentenciaSQL->fetch(PDO::FETCH_LAZY);
 
         //si el archivo  es diferente a imagen.jpg lo borra
-        if(isset ($producto["imagen"])&&($producto["imagen"]!="imagen.jpg")){
-            if(file_exists("../../img/".$producto["imagen"]))
-            unlink("../../img/".$producto["imagen"]);
-
+        if (isset($producto["imagen"]) && ($producto["imagen"] != "imagen.jpg")) {
+            if (file_exists("../../img/" . $producto["imagen"]))
+                unlink("../../img/" . $producto["imagen"]);
         }
-            //borrado de archivo
+        //borrado de archivo
         $sentenciaSQL = $conexion->prepare("DELETE FROM productos WHERE Id=:Id");
         $sentenciaSQL->bindParam(':Id', $txtId);
         $sentenciaSQL->execute();
-        
+        header("Location: productos.php");
         break;
 }
 $sentenciaSQL = $conexion->prepare("SELECT *FROM productos");
@@ -129,12 +131,12 @@ $listaproductos = $sentenciaSQL->fetchAll(PDO::FETCH_ASSOC);
 
                     <div class="form-group">
                         <label for="txtId">ID:</label>
-                        <input type="text" class="form-control" value="<?php echo $txtId; ?>" name="txtId" id="txtId" placeholder="ID">
+                        <input type="text" required readonly class="form-control" value="<?php echo $txtId; ?>" name="txtId" id="txtId" placeholder="ID">
                     </div>
 
                     <div class="form-group">
                         <label for="txtNombre">Nombre:</label>
-                        <input type="text" class="form-control" value="<?php echo $txtNombre; ?>" name="txtNombre" id="txtNombre" placeholder="Nombre">
+                        <input type="text" required class="form-control" value="<?php echo $txtNombre; ?>" name="txtNombre" id="txtNombre" placeholder="Nombre">
                     </div>
 
 
@@ -142,16 +144,21 @@ $listaproductos = $sentenciaSQL->fetchAll(PDO::FETCH_ASSOC);
                     <div class="form-group">
 
                         <label for="txtImagen">Imagen:</label>
+                        <br>
+                        <?php if ($txtImagen != "") { ?>
 
-                        <?php echo $txtImagen; ?>
 
-                        <input type="file" class="form-control" name="txtImagen" id="txtImagen" placeholder="Imagen"><!-type=file....para tipos de archivos en el form ->
+                            <img class="img-thumbnail rounded" src="../../img/<?php echo $txtImagen ?>" width="200" alt="" srcset="">
+
+
+                        <?php } ?>
+                        <input type="file"  class="form-control" name="txtImagen" id="txtImagen" placeholder="Imagen"><!-type=file....para tipos de archivos en el form ->
                     </div>
 
                     <div class="btn-group" role="group" aria-label="">
-                        <button type="submit" name="accion" value="Agregar" class="btn btn-success">Agregar</button><!-accion crea la accion a realizar ->
-                            <button type="submit" name="accion" value="Modificar" class="btn btn-warning">Modificar</button><!-tipo de boton subbmit ->
-                                <button type="submit" name="accion" value="Cancelar" class="btn btn-info">Cancelar</button><!-el value es lo que se hará con la acción ->
+                        <button type="submit" name="accion" <?php echo($accion=="Seleccionar")?"disabled":""; ?> value="Agregar" class="btn btn-success">Agregar</button><!-accion crea la accion a realizar ->
+                        <button type="submit" name="accion" <?php echo($accion!="Seleccionar")?"disabled":""; ?>  value="Modificar" class="btn btn-warning">Modificar</button><!-tipo de boton subbmit ->
+                        <button type="submit" name="accion" <?php echo($accion!="Seleccionar")?"disabled":""; ?>  value="Cancelar" class="btn btn-info">Cancelar</button><!-el value es lo que se hará con la acción ->
                     </div>
 
             </form>
@@ -174,13 +181,16 @@ $listaproductos = $sentenciaSQL->fetchAll(PDO::FETCH_ASSOC);
                 <tr>
                     <td><?php echo $producto['Id']; ?></td>
                     <td><?php echo $producto['Nombre']; ?></td>
-                    <td><?php echo $producto['Imagen']; ?></td>
+                    <td>
+
+                        <img src="../../img/<?php echo $producto['Imagen']; ?>" width="250" alt="" srcset="">
+
+                    </td>
 
                     <td>
                         <form method="post">
 
                             <input type="hidden" name="txtId" id="txtId" value="<?php echo $producto['Id']; ?>" />
-
                             <input type="submit" name="accion" value="Seleccionar" class="btn btn-primary" />
                             <input type="submit" name="accion" value="Borrar" class="btn btn-danger" />
 

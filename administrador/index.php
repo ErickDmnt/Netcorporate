@@ -1,6 +1,14 @@
 <?php
+session_start();
 if ($_POST) {
-    header("location:inicio.php");
+    if(($_POST['usuario']=="erick")&&($_POST['contrasenia']=="123")){
+
+        $_SESSION['usuario']=="ok";
+        $_SESSION['nombreUsuario']=="Developer";
+        header('Location: inicio.php');
+    }else{
+        $mensaje = "Error: El usuario o contrasena son incorrectos";
+    }
 }
 ?>
 <!doctype html>
@@ -31,6 +39,16 @@ if ($_POST) {
                         Login
                     </div>
                     <div class="card-body">
+
+                    <?php if(isset($mensaje)) {?>
+
+                                <div class="alert alert-danger" role="alert">
+                                <?php echo $mensaje; ?>
+                            </div>
+
+                           <?php }?>
+                            
+
                         <form method="POST">
 
                             <div class="form-group">
@@ -41,7 +59,7 @@ if ($_POST) {
                             </div>
                             <div class="form-group">
                                 <label>Contraseña</label>
-                                <input type="password" class="form-control" namee="contrasenia" placeholder="Contraseña">
+                                <input type="password" class="form-control" name="contrasenia" placeholder="Contraseña">
                             </div>
 
                             <button type="submit" class="btn btn-primary">Entrar</button>

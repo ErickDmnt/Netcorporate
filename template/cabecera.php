@@ -26,7 +26,7 @@
                 <a class="nav-link" href="#">Contactos</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="/../SitioWeb/administrador/inicio.php">Administrador</a>
+                <a class="nav-link" href="">Administrador</a> 
             </li>
         </ul>
     </nav>
