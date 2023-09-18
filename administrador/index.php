@@ -3,8 +3,8 @@ session_start();
 if ($_POST) {
     if(($_POST['usuario']=="erick")&&($_POST['contrasenia']=="123")){
 
-        $_SESSION['usuario']=="ok";
-        $_SESSION['nombreUsuario']=="Developer";
+        $_SESSION['usuario']="ok";
+        $_SESSION['nombreUsuario']="erick";
         header('Location: inicio.php');
     }else{
         $mensaje = "Error: El usuario o contrasena son incorrectos";
@@ -15,7 +15,7 @@ if ($_POST) {
 <html lang="en">
 
 <head>
-    <title>Title</title>
+    <title>Administrador</title>
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">

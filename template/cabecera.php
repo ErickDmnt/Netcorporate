@@ -8,6 +8,7 @@
 
 </head>
 <body>
+    <?php $url = "http://" . $_SERVER['HTTP_HOST'] . "/sitioweb" ?>
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
         <ul class="nav navbar-nav">
             <li class="nav-item">
@@ -26,7 +27,7 @@
                 <a class="nav-link" href="#">Contactos</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="">Administrador</a> 
+                <a class="nav-link" href="<?php echo $url;?>/administrador/index.php">Administrador</a> 
             </li>
         </ul>
     </nav>
