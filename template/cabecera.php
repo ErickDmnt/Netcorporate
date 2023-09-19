@@ -1,19 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sitio Web</title>
-    <link rel="stylesheet" href="./css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="./css/bootstrap.min.css" />
 
 </head>
+
 <body>
     <?php $url = "http://" . $_SERVER['HTTP_HOST'] . "/sitioweb" ?>
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
         <ul class="nav navbar-nav">
-            <li class="nav-item">
-                <a class="nav-link" href="#">Netcorporate </a>
-            </li>
             <li class="nav-item">
                 <a class="nav-link" href="index.php">Home</a>
             </li>
@@ -27,11 +26,14 @@
                 <a class="nav-link" href="#">Contactos</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="<?php echo $url;?>/administrador/index.php">Administrador</a> 
+                <a class="nav-link" href="<?php echo $url; ?>/administrador/index.php">Administrador</a>
             </li>
+            <form class="form-inline my-2 my-lg-0">
+                <input class="form-control mr-sm-1" type="search" placeholder="Buscar" aria-label="Search">
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Búsqueda</button>
+            </form>
         </ul>
     </nav>
     <div class="container">
         <br></br>
         <div class="row">
-            
