@@ -4,6 +4,7 @@
 /**print_r($_POST); para recepcion de datos */
 
 /**print_r($_FILES); para recepcion de archivos */
+/* ghjghjghjghjghjghj*/
 
 $txtId = (isset($_POST['txtId'])) ? $_POST['txtId'] : "";
 $txtNombre = (isset($_POST['txtNombre'])) ? $_POST['txtNombre'] : "";
