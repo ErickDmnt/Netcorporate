@@ -7,6 +7,7 @@
 
 $txtId = (isset($_POST['txtId'])) ? $_POST['txtId'] : "";
 $txtNombre = (isset($_POST['txtNombre'])) ? $_POST['txtNombre'] : "";
+$txtPrecio = (isset($_POST['txtPrecio'])) ? $_POST['txtPrecio'] : "";
 $txtImagen = (isset($_FILES['txtImagen']['name'])) ? $_FILES['txtImagen']['name'] : "";
 $accion = (isset($_POST['accion'])) ? $_POST['accion'] : "";
 
@@ -16,9 +17,10 @@ switch ($accion) {
 
     case "Agregar":
         //INSERT INTO `productos` (`Id`, `Nombre`, `Imagen`) VALUES (NULL, 'laptop', 'imagen.jpg');
-        $sentenciaSQL = $conexion->prepare("INSERT INTO productos (nombre, imagen) VALUES (:nombre, :imagen);");
+        $sentenciaSQL = $conexion->prepare("INSERT INTO productos (nombre,precio, imagen) VALUES (:nombre,:precio, :imagen);");
         /*Insercion de datos al localhost phpmyadmin*/
         $sentenciaSQL->bindParam(':nombre', $txtNombre);
+        $sentenciaSQL->bindParam(':precio',$txtPrecio);
         //crea el nombre para temporal de acuerdo a la fecha 
         $fecha = new DateTime();
         //crea el archivo en temporal con el nombre fecha o si esta vacio lo deja en imagen.jpg por defecto
@@ -87,6 +89,7 @@ switch ($accion) {
         $producto = $sentenciaSQL->fetch(PDO::FETCH_LAZY);
 
         $txtNombre = $producto['Nombre'];
+        $txtPrecio = $producto['Precio'];
         $txtImagen = $producto['Imagen'];
         // echo "Presionado boton Seleccionar";
         break;
@@ -139,7 +142,10 @@ $listaproductos = $sentenciaSQL->fetchAll(PDO::FETCH_ASSOC);
                         <input type="text" required class="form-control" value="<?php echo $txtNombre; ?>" name="txtNombre" id="txtNombre" placeholder="Nombre">
                     </div>
 
-
+                    <div class="form-group">
+                        <label for="txtNombre">Precio:</label>
+                        <input type="number" step="any" required class="form-control" value="<?php echo $txtPrecio; ?>" name="txtPrecio" id="txtPrecio" placeholder="Precio">
+                    </div>
 
                     <div class="form-group">
 
@@ -172,6 +178,7 @@ $listaproductos = $sentenciaSQL->fetchAll(PDO::FETCH_ASSOC);
             <tr>
                 <th>ID</th>
                 <th>Nombre</th>
+                <th>Precio</th>
                 <th>Producto</th>
                 <th>Acciones</th>
             </tr>
@@ -181,6 +188,7 @@ $listaproductos = $sentenciaSQL->fetchAll(PDO::FETCH_ASSOC);
                 <tr>
                     <td><?php echo $producto['Id']; ?></td>
                     <td><?php echo $producto['Nombre']; ?></td>
+                    <td><?php echo $producto['Precio']; ?></td>
                     <td>
 
                         <img src="../../img/<?php echo $producto['Imagen']; ?>" width="250" alt="" srcset="">
