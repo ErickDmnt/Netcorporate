@@ -4,7 +4,7 @@ if ($_POST) {
     if(($_POST['usuario']=="erick")&&($_POST['contrasenia']=="123")){
 
         $_SESSION['usuario']="ok";
-        $_SESSION['nombreUsuario']="erick";
+        $_SESSION['nombreUsuario']="Developer";
         header('Location: inicio.php');
     }else{
         $mensaje = "Error: El usuario o contrasena son incorrectos";

@@ -1,62 +1,24 @@
-<?php include ("template/cabecera.php"); ?>
+<?php include("template/cabecera.php"); ?>
+<?php 
+include ("administrador/config/bd.php");
 
-    <div class="col-md-3">
-        
-   
+$sentenciaSQL = $conexion->prepare("SELECT *FROM productos");
+$sentenciaSQL->execute();
+$listaproductos = $sentenciaSQL->fetchAll(PDO::FETCH_ASSOC);
+?> 
 
-    <div class="card">
+<?php foreach ($listaproductos as $producto){ ?>
+<div class="col-md-3">
+ <div class="card">
 
-        <img class="card-img-top" src="https://i.pinimg.com/236x/27/de/57/27de576bbeba4f5fc6305141cfd394b8.jpg" alt="">
+        <img class="card-img-top" src="./img/<?php echo $producto['Imagen']; ?>" alt="">
 
-            <div class="card-body">
-                <h4 class="card-title">Avatar de php</h4>
-                <a name="" id="" class="btn btn-primary" href="#" role="button">Ver más</a>
-            </div>
+        <div class="card-body">
+            <h4 class="card-title"><?php echo $producto['Nombre']; ?></h4>
+            <a name="" id="" class="btn btn-primary" href="#" role="button">Ver más</a>
         </div>
     </div>
- 
-    <div class="col-md-3">
-        
-   
+</div>
 
-        <div class="card">
-    
-            <img class="card-img-top" src="https://i.pinimg.com/236x/27/de/57/27de576bbeba4f5fc6305141cfd394b8.jpg" alt="">
-    
-                <div class="card-body">
-                    <h4 class="card-title">Avatar de php</h4>
-                    <a name="" id="" class="btn btn-primary" href="#" role="button">Ver más</a>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-        
-   
-
-    <div class="card">
-
-        <img class="card-img-top" src="https://i.pinimg.com/236x/27/de/57/27de576bbeba4f5fc6305141cfd394b8.jpg" alt="">
-
-            <div class="card-body">
-                <h4 class="card-title">Avatar de php</h4>
-                <a name="" id="" class="btn btn-primary" href="#" role="button">Ver más</a>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        
-   
-
-    <div class="card">
-
-        <img class="card-img-top" src="https://i.pinimg.com/236x/27/de/57/27de576bbeba4f5fc6305141cfd394b8.jpg" alt="">
-
-            <div class="card-body">
-                <h4 class="card-title">Avatar de php</h4>
-                <a name="" id="" class="btn btn-primary" href="#" role="button">Ver más</a>
-            </div>
-        </div>
-    </div>
-   
-
-<?php include ("template/pie.php"); ?>
+<?php }?>
+<?php include("template/pie.php"); ?>
